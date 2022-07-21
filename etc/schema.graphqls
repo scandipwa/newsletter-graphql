@@ -1,0 +1,21 @@
+
+# ScandiPWA - Progressive Web App for Magento
+#
+# Copyright © Scandiweb, Inc. All rights reserved.
+# See LICENSE for license details.
+#
+# @license OSL-3.0 (Open Software License ("OSL") v. 3.0)
+# @package scandipwa/newsletter-graphql
+# @link https://github.com/scandipwa/newsletter-graphql
+#
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
+type Mutation {
+    confirmSubscribingToNewsletter(id: String, code: String): ConfirmSubscribingStatus @resolver(class: "ScandiPWA\\NewsletterGraphQl\\Model\\Resolver\\ConfirmSubscribingToNewsletter") @doc(description: "Confirm subscribing to newsletter via email link")
+}
+
+type ConfirmSubscribingStatus {
+    status: String @doc(description: "Confirm subscribing status")
+    message: String @doc(description: "Confirm subscribing message")
+}
