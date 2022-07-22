@@ -68,7 +68,7 @@ class ConfirmSubscribingToNewsletter implements ResolverInterface
     ) {
         if (!isset($args['id']) || !isset($args['code'])) {
             return [
-                'status' => 'failed',
+                'status' => self::STATUS_FAILED,
                 'message' => __('Required parameter "id" or "code" is missing.')
             ];
         }
