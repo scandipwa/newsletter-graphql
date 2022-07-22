@@ -28,6 +28,12 @@ use Magento\Newsletter\Model\SubscriberFactory;
 class ConfirmSubscribingToNewsletter implements ResolverInterface
 {
     /**
+     * Newsletter subscription confirmation statuses
+     */
+    const STATUS_SUCCESS = 'success';
+    const STATUS_FAILED = 'failed';
+
+    /**
      * @var SubscriberFactory
      */
     protected SubscriberFactory $subscriberFactory;
@@ -60,15 +66,15 @@ class ConfirmSubscribingToNewsletter implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        $id = $args['id'];
-        $code = $args['code'];
-
-        if (!isset($id) || !isset($code)) {
+        if (!isset($args['id']) || !isset($args['code'])) {
             return [
                 'status' => 'failed',
                 'message' => __('Required parameter "id" or "code" is missing.')
             ];
         }
+
+        $id = $args['id'];
+        $code = $args['code'];
 
         /** @var \Magento\Newsletter\Model\Subscriber $subscriber */
         $subscriber = $this->subscriberFactory->create()->load($id);
@@ -76,29 +82,29 @@ class ConfirmSubscribingToNewsletter implements ResolverInterface
         if ($subscriber->getId() && $subscriber->getCode()) {
             if ((int)$subscriber->getStatus() === Subscriber::STATUS_SUBSCRIBED) {
                 return [
-                    'status' => 'success',
+                    'status' => self::STATUS_SUCCESS,
                     'message' => __('Your subscription has already been confirmed.')
                 ];
             } else if ($subscriber->confirm($code)) {
                 return [
-                    'status' => 'success',
+                    'status' => self::STATUS_SUCCESS,
                     'message' => __('Your subscription has been confirmed.')
                 ];
             } else {
                 return [
-                    'status' => 'failed',
+                    'status' => self::STATUS_FAILED,
                     'message' => __('This is an invalid subscription confirmation code.')
                 ];
             }
         } else {
             return [
-                'status' => 'failed',
+                'status' => self::STATUS_FAILED,
                 'message' => __('This is an invalid subscription ID.')
             ];
         }
 
         return [
-            'status' => 'failed',
+            'status' => self::STATUS_FAILED,
             'message' => __('Something went wrong!')
         ];
     }
